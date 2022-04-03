@@ -43,6 +43,7 @@ public class SimpleUserInterface implements UserInterface {
         if (isUserAuthenticationSuccessful) {
             logger.log("Authentication successful");
             presentMenu();
+            authenticationHandler.logout();
         } else {
             logger.log("Authentication not successful");
         }

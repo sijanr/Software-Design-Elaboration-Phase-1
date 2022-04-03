@@ -31,6 +31,11 @@ public class ArrowTechAuthentication implements AuthenticationHandler {
         return false;
     }
 
+    @Override
+    public void logout() {
+        logger.log("Logged out");
+    }
+
     private static class User {
 
         private final String username;
