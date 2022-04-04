@@ -45,6 +45,9 @@ public class ArkSecurityScan implements SecurityScan{
 
     @Override
     public String printReport(String securityAdminName, String dateForReport) {
-        return "Nothing to report";
+        return "Performer: " + securityAdminName +
+                "\nDate: " + dateForReport +
+                "\nUnauthorized attempts: " + unsuccessfulAttempts.size() +
+                "\nMalware Detected: 0";
     }
 }

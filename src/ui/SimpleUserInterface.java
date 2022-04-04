@@ -39,14 +39,22 @@ public class SimpleUserInterface implements UserInterface {
     @Override
     public void launch() {
         showWelcomeMessage();
-        boolean isUserAuthenticationSuccessful = authenticateUser();
-        if (isUserAuthenticationSuccessful) {
-            logger.log("Authentication successful");
-            presentMenu();
-            authenticationHandler.logout();
-        } else {
-            logger.log("Authentication not successful");
+        while(true) {
+            boolean isUserAuthenticationSuccessful = authenticateUser();
+            if (isUserAuthenticationSuccessful) {
+                logger.log("Authentication successful");
+                presentMenu();
+                authenticationHandler.logout();
+            } else {
+                logger.log("Authentication not successful");
+            }
+            System.out.println("Do you want to continue using the system? (Y/N) ");
+            String response = scanner.nextLine();
+            if (response.equalsIgnoreCase("n")) {
+                break;
+            }
         }
+
     }
 
     private boolean authenticateUser() {
@@ -104,7 +112,11 @@ public class SimpleUserInterface implements UserInterface {
                 String scan = securityScan.scan(scanName, scanType, sensitivity);
                 System.out.println(scan);
             } else if (selection == 3) {
-                String report = securityScan.printReport("James", "11-20-2020");
+                System.out.println("Security admin name: ");
+                String adminName = scanner.nextLine();
+                System.out.println("Enter the date you want the report for (MM-dd-yyyy) ");
+                String reportDate = scanner.nextLine();
+                String report = securityScan.printReport(adminName, reportDate);
                 System.out.println(report);
             }
         }
