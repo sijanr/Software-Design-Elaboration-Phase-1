@@ -5,7 +5,6 @@ import domain.applicantsmatcher.ArrowTechApplicantsMatcher;
 import domain.authentication.ArrowTechAuthentication;
 import domain.authentication.AuthenticationHandler;
 import domain.resumeparser.ArrowTechResumeParser;
-import domain.resumeparser.ParsedResumeInfo;
 import domain.resumeparser.ResumeParser;
 import domain.securityscan.ArkSecurityScan;
 import domain.securityscan.SecurityScan;
@@ -71,7 +70,7 @@ public class SimpleUserInterface implements UserInterface {
             System.out.println("Enter 1 to parse resumes");
             System.out.println("Enter 2 to match job openings");
             System.out.println("Enter 3 to perform security scan");
-            System.out.println("Enter 0 to quit ");
+            System.out.println("Enter 0 to log out");
             selection = scanner.nextInt();
             scanner.nextLine();
             if (selection == 1) {
@@ -124,16 +123,16 @@ public class SimpleUserInterface implements UserInterface {
 
     private void matchJobOpenings() {
         StringBuilder sb = new StringBuilder("Here is a list of jobs:\n");
-        List<Job> jobs = applicantsMatcher.getJobOpenings();
-        for (Job job : jobs) {
-            sb.append(job.getJobTitle()).append("\n");
+        List<DatabaseHandler.Job> jobs = applicantsMatcher.getJobOpenings();
+        for (DatabaseHandler.Job job : jobs) {
+            sb.append(job.jobTitle).append("\n");
         }
         System.out.println(sb);
         System.out.println("Enter the job title you want to see the requirement for: ");
         String jobTitle = scanner.nextLine();
-        Job job = null;
-        for (Job j : jobs) {
-            if (j.getJobTitle().equals(jobTitle)) {
+        DatabaseHandler.Job job = null;
+        for (DatabaseHandler.Job j : jobs) {
+            if (j.jobTitle.equals(jobTitle)) {
                 job = j;
             }
         }
@@ -141,9 +140,9 @@ public class SimpleUserInterface implements UserInterface {
             String experience = applicantsMatcher.getExperiencesNeededForAJob(job);
             System.out.println(experience);
             System.out.println("Here are the candidates that are qualified for the role: ");
-            List<JobApplicant> qualifiedApplicants = applicantsMatcher.getCandidatesQualifiedForJob(job);
-            for (JobApplicant candidate : qualifiedApplicants) {
-                System.out.println(candidate.getName());
+            List<DatabaseHandler.JobApplicant> qualifiedApplicants = applicantsMatcher.getCandidatesQualifiedForJob(job);
+            for (DatabaseHandler.JobApplicant candidate : qualifiedApplicants) {
+                System.out.println(candidate.name);
             }
             if (qualifiedApplicants.size() > 0) {
                 System.out.println("Do you want to send the candidates invitation to apply for job? (Y/N) ");
@@ -158,26 +157,37 @@ public class SimpleUserInterface implements UserInterface {
     }
 
     private void parseResume() {
-        List<Resume> resumes = databaseHandler.getResumes();
+        List<DatabaseHandler.Resume> resumes = databaseHandler.getResumes();
         System.out.println("Here are the resumes found in the database:");
-        for (Resume resume : resumes) {
-            System.out.println(resume.getFileName());
+        for (DatabaseHandler.Resume resume : resumes) {
+            System.out.println(resume.fileName);
         }
         System.out.println("Enter the file name of the resume that you want to parse");
         String resumeFileName = scanner.nextLine();
-        Resume resume = null;
-        for (Resume r : resumes) {
-            if (r.getFileName().equals(resumeFileName)) {
+        DatabaseHandler.Resume resume = null;
+        for (DatabaseHandler.Resume r : resumes) {
+            if (r.fileName.equals(resumeFileName)) {
                 resume = r;
             }
         }
         if (resume != null) {
-            ParsedResumeInfo parsedResume = resumeParser.parseResume(resume);
+            ResumeParser.ParsedResumeInfo parsedResume = resumeParser.parseResume(resume);
             System.out.println("Information parsed from the resume: ");
-            System.out.println("Applicant's name: " + parsedResume.getApplicantName());
-            System.out.println("Applicant's contact number: " + parsedResume.getContactNumber());
-            System.out.println("Applicant's email address: " + parsedResume.getEmailAddress());
-            System.out.println("Applican't education level: " + parsedResume.getEducationLevel());
+            System.out.println("Applicant's name: " + parsedResume.applicantName);
+            System.out.println("Applicant's contact number: " + parsedResume.contactNumber);
+            System.out.println("Applicant's email address: " + parsedResume.emailAddress);
+            System.out.println("Applican't education level: " + parsedResume.educationLevel);
+            System.out.println("Do you want to flag the resume? Y/N ");
+            String flagResume = scanner.nextLine();
+            if (flagResume.equalsIgnoreCase("Y")) {
+                System.out.println("Select 1 to flag the resume as OverQualified");
+                System.out.println("Select 2 to flag the resume as UnderQualified ");
+                System.out.println("Select 3 to flag the resume as Potential Match ");
+                int flagType = scanner.nextInt();
+                scanner.nextLine();
+                ResumeParser.ResumeFlagType value = ResumeParser.ResumeFlagType.values()[flagType - 1];
+                resumeParser.flagResume(resume, value);
+            }
         } else {
             System.out.println("Resume not found");
         }

@@ -4,8 +4,6 @@ import technicalservices.logger.ConsoleLogger;
 import technicalservices.logger.Logger;
 import technicalservices.persistence.ArrowTechDatabase;
 import technicalservices.persistence.DatabaseHandler;
-import technicalservices.persistence.Job;
-import technicalservices.persistence.JobApplicant;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,24 +20,24 @@ public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
     }
 
     @Override
-    public List<Job> getJobOpenings() {
+    public List<DatabaseHandler.Job> getJobOpenings() {
         return database.getJobs();
     }
 
     @Override
-    public String getExperiencesNeededForAJob(Job job) {
-        return "Education level: " + job.getRequiredEducationLevel() +
-                "\nNumber of experiences required: " + job.getRequiredNumberOfExperiences() +
-                "\nRequired location for the job: " + job.getPreferredLocation();
+    public String getExperiencesNeededForAJob(DatabaseHandler.Job job) {
+        return "Education level: " + job.requiredEducationLevel +
+                "\nNumber of experiences required: " + job.requiredNumberOfExperiences +
+                "\nRequired location for the job: " + job.preferredLocation;
     }
 
     @Override
-    public List<JobApplicant> getCandidatesQualifiedForJob(Job job) {
-        List<JobApplicant> jobApplicants = new ArrayList<>();
-        for (JobApplicant applicant : database.getJobApplicants()) {
-            if (job.getPreferredLocation().equalsIgnoreCase(applicant.getLocation())
-            && job.getRequiredNumberOfExperiences().equalsIgnoreCase(applicant.getNumberOfExperiences())
-            && job.getRequiredEducationLevel().equalsIgnoreCase(applicant.getEducationLevel())) {
+    public List<DatabaseHandler.JobApplicant> getCandidatesQualifiedForJob(DatabaseHandler.Job job) {
+        List<DatabaseHandler.JobApplicant> jobApplicants = new ArrayList<>();
+        for (DatabaseHandler.JobApplicant applicant : database.getJobApplicants()) {
+            if (job.preferredLocation.equalsIgnoreCase(applicant.location)
+            && job.requiredNumberOfExperiences.equalsIgnoreCase(applicant.numberOfExperiences)
+            && job.requiredEducationLevel.equalsIgnoreCase(applicant.educationLevel)) {
                 jobApplicants.add(applicant);
             }
         }
@@ -47,10 +45,10 @@ public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
     }
 
     @Override
-    public void requestCandidatesToApplyForJob(Job job, List<JobApplicant> jobApplicants) {
-        StringBuilder request = new StringBuilder("Request to apply for " + job.getJobTitle() + " sent to ");
-        for (JobApplicant applicant : jobApplicants) {
-            request.append(applicant.getName()).append(", ");
+    public void requestCandidatesToApplyForJob(DatabaseHandler.Job job, List<DatabaseHandler.JobApplicant> jobApplicants) {
+        StringBuilder request = new StringBuilder("Request to apply for " + job.jobTitle + " sent to ");
+        for (DatabaseHandler.JobApplicant applicant : jobApplicants) {
+            request.append(applicant.name).append(", ");
         }
         logger.log(request.toString());
     }

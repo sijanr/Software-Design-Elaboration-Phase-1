@@ -1,13 +1,12 @@
 package domain.applicantsmatcher;
 
-import technicalservices.persistence.Job;
-import technicalservices.persistence.JobApplicant;
+import technicalservices.persistence.DatabaseHandler;
 
 import java.util.List;
 
 public interface ApplicantsMatcher {
-    List<Job> getJobOpenings();
-    String getExperiencesNeededForAJob(Job job);
-    List<JobApplicant> getCandidatesQualifiedForJob(Job job);
-    void requestCandidatesToApplyForJob(Job job, List<JobApplicant> jobApplicants);
+    List<DatabaseHandler.Job> getJobOpenings();
+    String getExperiencesNeededForAJob(DatabaseHandler.Job job);
+    List<DatabaseHandler.JobApplicant> getCandidatesQualifiedForJob(DatabaseHandler.Job job);
+    void requestCandidatesToApplyForJob(DatabaseHandler.Job job, List<DatabaseHandler.JobApplicant> jobApplicants);
 }

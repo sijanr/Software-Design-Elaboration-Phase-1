@@ -58,6 +58,6 @@ public class ArrowTechDatabase implements DatabaseHandler {
         resumes = new ArrayList<>();
         resumes.add(new Resume("Resume1", "11/25/2018"));
         resumes.add(new Resume("Resume2", "04/45/2017"));
-        resumes.add(new Resume("Resume1", "08/15/2020"));
+        resumes.add(new Resume("Resume3", "08/15/2020"));
     }
 }
