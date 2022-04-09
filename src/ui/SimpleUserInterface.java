@@ -4,8 +4,6 @@ import domain.applicantsmatcher.ApplicantsMatcher;
 import domain.applicantsmatcher.ArrowTechApplicantsMatcher;
 import domain.authentication.ArrowTechAuthentication;
 import domain.authentication.AuthenticationHandler;
-import domain.resumeparser.ArrowTechResumeParser;
-import domain.resumeparser.ResumeParser;
 import domain.securityscan.ArkSecurityScan;
 import domain.securityscan.SecurityScan;
 import technicalservices.logger.ConsoleLogger;
@@ -21,7 +19,6 @@ public class SimpleUserInterface implements UserInterface {
     private final Logger logger;
     private final ApplicantsMatcher applicantsMatcher;
     private final AuthenticationHandler authenticationHandler;
-    private final ResumeParser resumeParser;
     private  final SecurityScan securityScan;
     private final DatabaseHandler databaseHandler;
 
@@ -29,7 +26,6 @@ public class SimpleUserInterface implements UserInterface {
         logger = new ConsoleLogger();
         applicantsMatcher = new ArrowTechApplicantsMatcher();
         authenticationHandler = new ArrowTechAuthentication();
-        resumeParser = new ArrowTechResumeParser();
         databaseHandler = new ArrowTechDatabase();
         securityScan = new ArkSecurityScan("James");
         logger.log("Initializing UI...");
@@ -67,17 +63,14 @@ public class SimpleUserInterface implements UserInterface {
     private void presentMenu() {
         int selection = -1;
         while(selection != 0) {
-            System.out.println("Enter 1 to parse resumes");
-            System.out.println("Enter 2 to match job openings");
-            System.out.println("Enter 3 to perform security scan");
+            System.out.println("Enter 1 to run applicants matcher feature");
+            System.out.println("Enter 2 to perform security scan");
             System.out.println("Enter 0 to log out");
             selection = scanner.nextInt();
             scanner.nextLine();
             if (selection == 1) {
-                parseResume();
+                applicantsMatcher();
             } else if (selection == 2) {
-                matchJobOpenings();
-            } else if (selection == 3) {
                 performSecurityScan();
             }
         }
@@ -118,6 +111,18 @@ public class SimpleUserInterface implements UserInterface {
                 String report = securityScan.printReport(adminName, reportDate);
                 System.out.println(report);
             }
+        }
+    }
+
+    private void applicantsMatcher() {
+        System.out.println("Enter 1 to parse resume");
+        System.out.println("Enter 2 to match job openings");
+        int selection = scanner.nextInt();
+        scanner.nextLine();
+        if (selection == 1) {
+            parseResume();
+        } else if (selection == 2){
+            matchJobOpenings();
         }
     }
 
@@ -171,7 +176,7 @@ public class SimpleUserInterface implements UserInterface {
             }
         }
         if (resume != null) {
-            ResumeParser.ParsedResumeInfo parsedResume = resumeParser.parseResume(resume);
+            ApplicantsMatcher.ParsedResumeInfo parsedResume = applicantsMatcher.parseResume(resume);
             System.out.println("Information parsed from the resume: ");
             System.out.println("Applicant's name: " + parsedResume.applicantName);
             System.out.println("Applicant's contact number: " + parsedResume.contactNumber);
@@ -185,8 +190,8 @@ public class SimpleUserInterface implements UserInterface {
                 System.out.println("Select 3 to flag the resume as Potential Match ");
                 int flagType = scanner.nextInt();
                 scanner.nextLine();
-                ResumeParser.ResumeFlagType value = ResumeParser.ResumeFlagType.values()[flagType - 1];
-                resumeParser.flagResume(resume, value);
+                ApplicantsMatcher.ResumeFlagType value = ApplicantsMatcher.ResumeFlagType.values()[flagType - 1];
+                applicantsMatcher.flagResume(resume, value);
             }
         } else {
             System.out.println("Resume not found");
