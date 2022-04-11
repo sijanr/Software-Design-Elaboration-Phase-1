@@ -30,7 +30,7 @@ public class ArkSecurityScan implements SecurityScan{
     }
 
     @Override
-    public List<String> unauthorizedAttempts(int sinceDays) {
+    public List<String> unauthorizedAttempts() {
         return unsuccessfulAttempts;
     }
 

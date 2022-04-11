@@ -86,7 +86,7 @@ public class SimpleUserInterface implements UserInterface {
             selection = scanner.nextInt();
             scanner.nextLine();
             if (selection == 1) {
-                List<String> unauthorizedAttempts = securityScan.unauthorizedAttempts(1);
+                List<String> unauthorizedAttempts = securityScan.unauthorizedAttempts();
                 if (unauthorizedAttempts.size() > 0) {
                     for (String s : unauthorizedAttempts) {
                         System.out.println(s);
