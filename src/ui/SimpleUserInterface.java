@@ -20,13 +20,11 @@ public class SimpleUserInterface implements UserInterface {
     private final ApplicantsMatcher applicantsMatcher;
     private final AuthenticationHandler authenticationHandler;
     private  final SecurityScan securityScan;
-    private final DatabaseHandler databaseHandler;
 
     public SimpleUserInterface() {
         logger = new ConsoleLogger();
         applicantsMatcher = new ArrowTechApplicantsMatcher();
         authenticationHandler = new ArrowTechAuthentication();
-        databaseHandler = new ArrowTechDatabase();
         securityScan = new ArkSecurityScan("James");
         logger.log("Initializing UI...");
     }
@@ -128,15 +126,15 @@ public class SimpleUserInterface implements UserInterface {
 
     private void matchJobOpenings() {
         StringBuilder sb = new StringBuilder("Here is a list of jobs:\n");
-        List<DatabaseHandler.Job> jobs = applicantsMatcher.getJobOpenings();
-        for (DatabaseHandler.Job job : jobs) {
+        List<PersistenceHandler.Job> jobs = applicantsMatcher.getJobOpenings();
+        for (PersistenceHandler.Job job : jobs) {
             sb.append(job.jobTitle).append("\n");
         }
         System.out.println(sb);
         System.out.println("Enter the job title you want to see the requirement for: ");
         String jobTitle = scanner.nextLine();
-        DatabaseHandler.Job job = null;
-        for (DatabaseHandler.Job j : jobs) {
+        PersistenceHandler.Job job = null;
+        for (PersistenceHandler.Job j : jobs) {
             if (j.jobTitle.equals(jobTitle)) {
                 job = j;
             }
@@ -145,8 +143,8 @@ public class SimpleUserInterface implements UserInterface {
             String experience = applicantsMatcher.getExperiencesNeededForAJob(job);
             System.out.println(experience);
             System.out.println("Here are the candidates that are qualified for the role: ");
-            List<DatabaseHandler.JobApplicant> qualifiedApplicants = applicantsMatcher.getCandidatesQualifiedForJob(job);
-            for (DatabaseHandler.JobApplicant candidate : qualifiedApplicants) {
+            List<PersistenceHandler.JobApplicant> qualifiedApplicants = applicantsMatcher.getCandidatesQualifiedForJob(job);
+            for (PersistenceHandler.JobApplicant candidate : qualifiedApplicants) {
                 System.out.println(candidate.name);
             }
             if (qualifiedApplicants.size() > 0) {
@@ -162,15 +160,15 @@ public class SimpleUserInterface implements UserInterface {
     }
 
     private void parseResume() {
-        List<DatabaseHandler.Resume> resumes = databaseHandler.getResumes();
+        List<PersistenceHandler.Resume> resumes = applicantsMatcher.getResumes();
         System.out.println("Here are the resumes found in the database:");
-        for (DatabaseHandler.Resume resume : resumes) {
+        for (PersistenceHandler.Resume resume : resumes) {
             System.out.println(resume.fileName);
         }
         System.out.println("Enter the file name of the resume that you want to parse");
         String resumeFileName = scanner.nextLine();
-        DatabaseHandler.Resume resume = null;
-        for (DatabaseHandler.Resume r : resumes) {
+        PersistenceHandler.Resume resume = null;
+        for (PersistenceHandler.Resume r : resumes) {
             if (r.fileName.equals(resumeFileName)) {
                 resume = r;
             }

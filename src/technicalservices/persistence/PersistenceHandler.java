@@ -2,7 +2,7 @@ package technicalservices.persistence;
 
 import java.util.List;
 
-public interface DatabaseHandler {
+public interface PersistenceHandler {
 
     class Job {
         public String jobTitle;
@@ -10,14 +10,6 @@ public interface DatabaseHandler {
         public String requiredEducationLevel;
         public String requiredNumberOfExperiences;
         public String preferredLocation;
-
-        public Job(String jobTitle, String jobDescription, String requiredEducationLevel, String requiredNumberOfExperiences, String preferredLocation) {
-            this.jobTitle = jobTitle;
-            this.jobDescription = jobDescription;
-            this.requiredEducationLevel = requiredEducationLevel;
-            this.requiredNumberOfExperiences = requiredNumberOfExperiences;
-            this.preferredLocation = preferredLocation;
-        }
     }
 
     class JobApplicant {
@@ -35,6 +27,11 @@ public interface DatabaseHandler {
         }
     }
 
+    class User {
+        public String username;
+        public String password;
+    }
+
     class Resume {
 
         public String fileName;
@@ -48,7 +45,12 @@ public interface DatabaseHandler {
         }
     }
 
+    static PersistenceHandler createDatabaseHandler() {
+        return new ArrowTechDatabase();
+    }
+
     List<Resume> getResumes();
     List<Job> getJobs();
     List<JobApplicant> getJobApplicants();
+    List<User> getUsers();
 }

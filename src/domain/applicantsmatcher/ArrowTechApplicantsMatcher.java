@@ -2,8 +2,7 @@ package domain.applicantsmatcher;
 
 import technicalservices.logger.ConsoleLogger;
 import technicalservices.logger.Logger;
-import technicalservices.persistence.ArrowTechDatabase;
-import technicalservices.persistence.DatabaseHandler;
+import technicalservices.persistence.PersistenceHandler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,34 +11,34 @@ import java.util.Map;
 
 public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
 
-    private final DatabaseHandler database;
+    private final PersistenceHandler database;
     private final Logger logger;
     private final Map<String, ParsedResumeInfo> parsedResumeInfoMap;
 
     public ArrowTechApplicantsMatcher() {
         logger = new ConsoleLogger();
-        database = new ArrowTechDatabase();
+        database = PersistenceHandler.createDatabaseHandler();
         parsedResumeInfoMap = new HashMap<>();
         initializeParsedResumes();
         logger.log("Initializing applicants matcher");
     }
 
     @Override
-    public List<DatabaseHandler.Job> getJobOpenings() {
+    public List<PersistenceHandler.Job> getJobOpenings() {
         return database.getJobs();
     }
 
     @Override
-    public String getExperiencesNeededForAJob(DatabaseHandler.Job job) {
+    public String getExperiencesNeededForAJob(PersistenceHandler.Job job) {
         return "Education level: " + job.requiredEducationLevel +
                 "\nNumber of experiences required: " + job.requiredNumberOfExperiences +
                 "\nRequired location for the job: " + job.preferredLocation;
     }
 
     @Override
-    public List<DatabaseHandler.JobApplicant> getCandidatesQualifiedForJob(DatabaseHandler.Job job) {
-        List<DatabaseHandler.JobApplicant> jobApplicants = new ArrayList<>();
-        for (DatabaseHandler.JobApplicant applicant : database.getJobApplicants()) {
+    public List<PersistenceHandler.JobApplicant> getCandidatesQualifiedForJob(PersistenceHandler.Job job) {
+        List<PersistenceHandler.JobApplicant> jobApplicants = new ArrayList<>();
+        for (PersistenceHandler.JobApplicant applicant : database.getJobApplicants()) {
             if (job.preferredLocation.equalsIgnoreCase(applicant.location)
             && job.requiredNumberOfExperiences.equalsIgnoreCase(applicant.numberOfExperiences)
             && job.requiredEducationLevel.equalsIgnoreCase(applicant.educationLevel)) {
@@ -50,22 +49,22 @@ public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
     }
 
     @Override
-    public void requestCandidatesToApplyForJob(DatabaseHandler.Job job, List<DatabaseHandler.JobApplicant> jobApplicants) {
+    public void requestCandidatesToApplyForJob(PersistenceHandler.Job job, List<PersistenceHandler.JobApplicant> jobApplicants) {
         StringBuilder request = new StringBuilder("Request to apply for " + job.jobTitle + " sent to ");
-        for (DatabaseHandler.JobApplicant applicant : jobApplicants) {
+        for (PersistenceHandler.JobApplicant applicant : jobApplicants) {
             request.append(applicant.name).append(", ");
         }
         logger.log(request.toString());
     }
 
     @Override
-    public ParsedResumeInfo parseResume(DatabaseHandler.Resume resume) {
+    public ParsedResumeInfo parseResume(PersistenceHandler.Resume resume) {
         logger.log("Parsing the resume...");
         return parsedResumeInfoMap.get(resume.fileName);
     }
 
     @Override
-    public void flagResume(DatabaseHandler.Resume resume, ResumeFlagType flagType) {
+    public void flagResume(PersistenceHandler.Resume resume, ResumeFlagType flagType) {
         if (flagType == ResumeFlagType.OVERQUALIFIED) {
             resume.tagName = "Overqualified";
         } else if (flagType == ResumeFlagType.UNDERQUALIFIED) {
@@ -76,8 +75,13 @@ public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
         logger.log("Resume has been flagged as " + flagType);
     }
 
+    @Override
+    public List<PersistenceHandler.Resume> getResumes() {
+        return database.getResumes();
+    }
+
     private void initializeParsedResumes() {
-        List<DatabaseHandler.Resume> resumes = database.getResumes();
+        List<PersistenceHandler.Resume> resumes = database.getResumes();
         List<ParsedResumeInfo> parsedResumes = new ArrayList<>();
         parsedResumes.add(new ParsedResumeInfo("John", "Bachelors", "john@gmail.com", "123-456-789"));
         parsedResumes.add(new ParsedResumeInfo("Josh", "Masters", "josh@gmail.com", "128-956-789"));

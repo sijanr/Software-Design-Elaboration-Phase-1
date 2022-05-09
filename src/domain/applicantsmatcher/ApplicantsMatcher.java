@@ -1,6 +1,6 @@
 package domain.applicantsmatcher;
 
-import technicalservices.persistence.DatabaseHandler;
+import technicalservices.persistence.PersistenceHandler;
 
 import java.util.List;
 
@@ -27,10 +27,11 @@ public interface ApplicantsMatcher {
         POTENTIAL_MATCH
     }
 
-    List<DatabaseHandler.Job> getJobOpenings();
-    String getExperiencesNeededForAJob(DatabaseHandler.Job job);
-    List<DatabaseHandler.JobApplicant> getCandidatesQualifiedForJob(DatabaseHandler.Job job);
-    void requestCandidatesToApplyForJob(DatabaseHandler.Job job, List<DatabaseHandler.JobApplicant> jobApplicants);
-    ParsedResumeInfo parseResume(DatabaseHandler.Resume resume);
-    void flagResume(DatabaseHandler.Resume resume, ResumeFlagType flagType);
+    List<PersistenceHandler.Job> getJobOpenings();
+    String getExperiencesNeededForAJob(PersistenceHandler.Job job);
+    List<PersistenceHandler.JobApplicant> getCandidatesQualifiedForJob(PersistenceHandler.Job job);
+    void requestCandidatesToApplyForJob(PersistenceHandler.Job job, List<PersistenceHandler.JobApplicant> jobApplicants);
+    ParsedResumeInfo parseResume(PersistenceHandler.Resume resume);
+    void flagResume(PersistenceHandler.Resume resume, ResumeFlagType flagType);
+    List<PersistenceHandler.Resume> getResumes();
 }
