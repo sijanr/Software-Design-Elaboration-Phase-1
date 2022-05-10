@@ -1,10 +1,7 @@
 package ui;
 
 import domain.applicantsmatcher.ApplicantsMatcher;
-import domain.applicantsmatcher.ArrowTechApplicantsMatcher;
-import domain.authentication.ArrowTechAuthentication;
 import domain.authentication.AuthenticationHandler;
-import domain.securityscan.ArkSecurityScan;
 import domain.securityscan.SecurityScan;
 import technicalservices.logger.ConsoleLogger;
 import technicalservices.logger.Logger;
@@ -18,14 +15,15 @@ public class SimpleUserInterface implements UserInterface {
     private static final Scanner scanner = new Scanner(System.in);
     private final Logger logger;
     private final ApplicantsMatcher applicantsMatcher;
-    private final AuthenticationHandler authenticationHandler;
+    private AuthenticationHandler authenticationHandler;
     private  final SecurityScan securityScan;
+    private boolean samlAuthentication = true;
 
     public SimpleUserInterface() {
         logger = new ConsoleLogger();
-        applicantsMatcher = new ArrowTechApplicantsMatcher();
-        authenticationHandler = new ArrowTechAuthentication();
-        securityScan = new ArkSecurityScan("James");
+        applicantsMatcher = ApplicantsMatcher.createApplicantsMatcher();
+        authenticationHandler = AuthenticationHandler.createAuthenticationHandler("SAMLAuthentication");
+        securityScan = SecurityScan.createSecurityScan("James");
         logger.log("Initializing UI...");
     }
 
@@ -33,6 +31,9 @@ public class SimpleUserInterface implements UserInterface {
     public void launch() {
         showWelcomeMessage();
         while(true) {
+            if (samlAuthentication) {
+                provideLoginOptions();
+            }
             boolean isUserAuthenticationSuccessful = authenticateUser();
             if (isUserAuthenticationSuccessful) {
                 logger.log("Authentication successful");
@@ -47,7 +48,28 @@ public class SimpleUserInterface implements UserInterface {
                 break;
             }
         }
+    }
 
+    private void provideLoginOptions() {
+        System.out.println("Do you want to login using different SAML providers?(Y?N) ");
+        String result = scanner.nextLine();
+        if (result.equalsIgnoreCase("Y")) {
+            System.out.println("Enter 1 to log in with Apple");
+            System.out.println("Enter 2 to log in with Google");
+            System.out.println("Enter 3 to log in with Facebook");
+            System.out.println("Enter 4 to log to mock login");
+        }
+        int option = scanner.nextInt();
+        scanner.nextLine();
+        if (option == 1) {
+            authenticationHandler = AuthenticationHandler.createSAMLAuthenticationHandler("Apple");
+        } else if (option == 2) {
+            authenticationHandler = AuthenticationHandler.createSAMLAuthenticationHandler("Google");
+        } else if (option == 3) {
+
+        } else {
+            authenticationHandler = AuthenticationHandler.createSAMLAuthenticationHandler("");
+        }
     }
 
     private boolean authenticateUser() {

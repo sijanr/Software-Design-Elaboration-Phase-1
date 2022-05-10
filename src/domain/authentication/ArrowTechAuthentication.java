@@ -7,10 +7,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class ArrowTechAuthentication implements AuthenticationHandler {
+class ArrowTechAuthentication implements AuthenticationHandler {
 
     private final List<User> users;
-    private final Logger logger;
+    protected final Logger logger;
 
     public ArrowTechAuthentication() {
         logger = new ConsoleLogger();

@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-public class ArkSecurityScan implements SecurityScan{
+class ArkSecurityScan implements SecurityScan{
 
     private static List<String> unsuccessfulAttempts = new ArrayList<>();
     private String securityAdminName;

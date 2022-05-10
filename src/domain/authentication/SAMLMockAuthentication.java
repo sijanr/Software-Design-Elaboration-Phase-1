@@ -1,6 +1,6 @@
 package domain.authentication;
 
-public class ArrowTechMockLogin extends ArrowTechAuthentication {
+class SAMLMockAuthentication extends ArrowTechAuthentication {
 
     @Override
     public boolean login(String username, String password) {

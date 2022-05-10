@@ -3,13 +3,12 @@ package domain.applicantsmatcher;
 import technicalservices.logger.ConsoleLogger;
 import technicalservices.logger.Logger;
 import technicalservices.persistence.PersistenceHandler;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
+class ArrowTechApplicantsMatcher implements ApplicantsMatcher {
 
     private final PersistenceHandler database;
     private final Logger logger;

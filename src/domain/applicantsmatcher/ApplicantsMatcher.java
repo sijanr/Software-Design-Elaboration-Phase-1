@@ -27,6 +27,10 @@ public interface ApplicantsMatcher {
         POTENTIAL_MATCH
     }
 
+    static ApplicantsMatcher createApplicantsMatcher() {
+        return new ArrowTechApplicantsMatcher();
+    }
+
     List<PersistenceHandler.Job> getJobOpenings();
     String getExperiencesNeededForAJob(PersistenceHandler.Job job);
     List<PersistenceHandler.JobApplicant> getCandidatesQualifiedForJob(PersistenceHandler.Job job);

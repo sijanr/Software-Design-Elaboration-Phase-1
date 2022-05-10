@@ -48,6 +48,8 @@ class ArrowTechDatabase implements PersistenceHandler {
         users.add(createUser("Matt", "123456"));
         users.add(createUser("Jack", "qwerty"));
         users.add(createUser("Zoe", "asdf"));
+        users.add(createUser("zoe@apple.com", "asdf"));
+        users.add(createUser("jack@gmail.com", "asdf"));
     }
 
     private void initializeJobApplicants() {

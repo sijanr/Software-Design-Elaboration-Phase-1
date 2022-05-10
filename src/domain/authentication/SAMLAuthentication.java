@@ -3,10 +3,10 @@ package domain.authentication;
 import technicalservices.logger.Logger;
 import technicalservices.persistence.PersistenceHandler;
 
-public class SAMLAuthentication implements AuthenticationHandler{
+class SAMLAuthentication implements AuthenticationHandler{
 
-    private final PersistenceHandler databaseHandler;
-    private final Logger logger;
+    protected final PersistenceHandler databaseHandler;
+    protected final Logger logger;
 
     public SAMLAuthentication() {
         databaseHandler = PersistenceHandler.createDatabaseHandler();
@@ -15,6 +15,7 @@ public class SAMLAuthentication implements AuthenticationHandler{
 
     @Override
     public boolean login(String username, String password) {
+        logger.log("SAML authenticating...");
         for (PersistenceHandler.User user : databaseHandler.getUsers()) {
             if (user.username.equals(username) && user.password.equals(password)) {
                 logger.log("Authentication successful");
